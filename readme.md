@@ -175,6 +175,10 @@ The frontend sends the following JSON payload to n8n:
 
 ---
 
+# Google Sheet store data
+https://docs.google.com/spreadsheets/d/1-q5SmwUMN57q9fPrGyWeSgboOxLb9wGuAi4-tshd4Ck/edit?gid=0#gid=0
+---
+
 # AI Prompt Used
 
 ```text
