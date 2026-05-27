@@ -196,32 +196,6 @@ Return only the final message text.
 
 ---
 
-# Deployment Options
-
-You can deploy this project using:
-
-- Netlify
-- Vercel
-- GitHub Pages
-- cPanel Hosting
-- AWS S3
-- Firebase Hosting
-
----
-
-# Security Recommendations
-
-Recommended production improvements:
-
-- Enable proper CORS configuration
-- Add Google reCAPTCHA
-- Enable webhook authentication
-- Add rate limiting
-- Validate form inputs
-- Sanitize request data
-
----
-
 # Future Improvements
 
 Possible upgrades for this project:
@@ -241,16 +215,6 @@ Possible upgrades for this project:
 # Screenshots
 
 Add project screenshots inside:
-
-```text
-/assets/
-```
-
-Example:
-
-```text
-/assets/contact-page.png
-```
 
 ---
 
