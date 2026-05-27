@@ -219,6 +219,8 @@ Possible upgrades for this project:
 # Screenshots
 
 Add project screenshots inside:
+<img width="1200" height="500" alt="image" src="https://github.com/user-attachments/assets/eeaf7a8b-6989-4e3b-a3c4-f490b247383c" />
+<img width="1200" height="500" alt="image" src="https://github.com/user-attachments/assets/d1b75633-a2c0-4424-888e-5767957b3b11" />
 
 ---
 
