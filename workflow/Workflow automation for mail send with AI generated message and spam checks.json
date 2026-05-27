@@ -1,0 +1,391 @@
+{
+  "name": "Workflow automation for mail send with AI generated message and spam checks",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "contact-form",
+        "options": {}
+      },
+      "id": "c5757321-f287-45e1-afaf-1aa83337d270",
+      "name": "Form Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        240,
+        304
+      ],
+      "webhookId": "d500fac4-f39e-4c4a-832f-426109fd67f7"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a professional customer support assistant for a modern business website.\n\nGenerate a warm, professional, and human-like welcome message for a contact form submission.\n\nRequirements:\n\n* Address the user by their first name using: {{ $json.body.firstname }}\n* Acknowledge their inquiry regarding: {{ $json.body.description }}\n* Keep the response concise (maximum 4-5 lines)\n* Maintain a friendly, professional, and trustworthy tone\n* Assure the user that our team will review their message and respond shortly\n* Avoid robotic or overly generic wording\n* Make the message feel personalized and premium\n\nThe final response should be plain text only without quotation marks.\n",
+        "options": {
+          "systemMessage": "You are a professional customer service assistant. Generate concise, friendly welcome messages for contact form submissions."
+        }
+      },
+      "id": "4069adf6-0955-432c-938d-ba70335e2dca",
+      "name": "Generate Welcome Message",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        464,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "={{ $('Form Webhook').item.json.body.email }}",
+        "subject": "Thank you for contacting us!",
+        "message": "={{ $json.output }}",
+        "approvalOptions": {
+          "values": {
+            "approveLabel": "Email Received"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 5,
+              "resumeUnit": "minutes"
+            }
+          },
+          "appendAttribution": true
+        }
+      },
+      "id": "117fa258-bb2b-4964-ae55-59dc53aa0405",
+      "name": "Send Welcome Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        816,
+        304
+      ],
+      "webhookId": "a1addaa5-8b5a-4514-b848-dcd7b5ae7cba",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "WmBPburYxfwUdNDA",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.status }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "value2": "Not Spam"
+              },
+              "id": "c03715a6-43b4-411c-aa9b-9596d08325ff",
+              "rightValue": "Not Spam"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "ffc77fdb-101b-4558-b3f3-700f7a405240",
+      "name": "Check Spam Status",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1264,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-q5SmwUMN57q9fPrGyWeSgboOxLb9wGuAi4-tshd4Ck",
+          "mode": "list",
+          "cachedResultName": "N8N Automate Mail list",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-q5SmwUMN57q9fPrGyWeSgboOxLb9wGuAi4-tshd4Ck/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Not Spam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-q5SmwUMN57q9fPrGyWeSgboOxLb9wGuAi4-tshd4Ck/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "6024b1af-9af8-481a-9e33-cedb8acfb4b7",
+      "name": "Add to Sheet - Not Spam",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1488,
+        208
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GRCdJd4HHNu1Q4tg",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1-q5SmwUMN57q9fPrGyWeSgboOxLb9wGuAi4-tshd4Ck",
+          "mode": "list",
+          "cachedResultName": "N8N Automate Mail list",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-q5SmwUMN57q9fPrGyWeSgboOxLb9wGuAi4-tshd4Ck/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1617720266,
+          "mode": "list",
+          "cachedResultName": "Spam",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-q5SmwUMN57q9fPrGyWeSgboOxLb9wGuAi4-tshd4Ck/edit#gid=1617720266"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "firstname",
+              "displayName": "firstname",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email",
+              "displayName": "email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "c20a7317-0a8e-447c-bda8-baf8f8d6588e",
+      "name": "Add to Sheet - Spam",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1488,
+        400
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GRCdJd4HHNu1Q4tg",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {
+          "maxTokensToSample": 500,
+          "temperature": 0.7
+        }
+      },
+      "id": "11a9508b-6521-4bd5-9dd7-10082032ecfd",
+      "name": "Groq Model (Free)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        536,
+        528
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "FUdsFtcpCm74QUau",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "firstname",
+              "name": "firstname",
+              "value": "={{ $(\"Form Webhook\").item.json.body.firstname }}",
+              "type": "string"
+            },
+            {
+              "id": "email",
+              "name": "email",
+              "value": "={{ $(\"Form Webhook\").item.json.body.email }}",
+              "type": "string"
+            },
+            {
+              "id": "description",
+              "name": "description",
+              "value": "={{ $(\"Form Webhook\").item.json.body.description }}",
+              "type": "string"
+            },
+            {
+              "id": "status",
+              "name": "status",
+              "value": "={{ $json.data.approved ? \"Not Spam\" : \"Spam\" }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "6cb5305d-fad2-4a7d-a222-f618bd065ae8",
+      "name": "Prepare Sheet Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1040,
+        304
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Form Webhook": {
+      "main": [
+        [
+          {
+            "node": "Generate Welcome Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Welcome Message": {
+      "main": [
+        [
+          {
+            "node": "Send Welcome Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Welcome Email": {
+      "main": [
+        [
+          {
+            "node": "Prepare Sheet Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Spam Status": {
+      "main": [
+        [
+          {
+            "node": "Add to Sheet - Not Spam",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Add to Sheet - Spam",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Model (Free)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Welcome Message",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to Sheet - Spam": {
+      "main": [
+        []
+      ]
+    },
+    "Prepare Sheet Data": {
+      "main": [
+        [
+          {
+            "node": "Check Spam Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "569eb867-1a73-4e30-8276-507eab65aa26",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f544407fd8ca84ac53c85eb73cda283c48ec0ed27c7e72aff7d7a26b1231ff45"
+  },
+  "id": "pB7MDBuXlmrQYzwD",
+  "tags": []
+}

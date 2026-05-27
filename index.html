@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Contact Us</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Inter',sans-serif;
+    background:#050816;
+    min-height:100vh;
+    overflow-x:hidden;
+    color:white;
+}
+
+/* Background Glow */
+
+.bg-glow{
+    position:fixed;
+    width:500px;
+    height:500px;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:0.4;
+    z-index:0;
+}
+
+.glow1{
+    background:#4f46e5;
+    top:-100px;
+    left:-100px;
+}
+
+.glow2{
+    background:#06b6d4;
+    bottom:-150px;
+    right:-100px;
+}
+
+/* Main */
+
+.container{
+    position:relative;
+    z-index:2;
+    max-width:1300px;
+    margin:auto;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:50px 20px;
+}
+
+.contact-wrapper{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:50px;
+    align-items:center;
+}
+
+/* Left Content */
+
+.left-content h1{
+    font-size:64px;
+    line-height:1.1;
+    margin-bottom:25px;
+    font-weight:700;
+}
+
+.left-content h1 span{
+    background:linear-gradient(90deg,#06b6d4,#6366f1);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.left-content p{
+    color:#a1a1aa;
+    font-size:18px;
+    line-height:1.8;
+    margin-bottom:40px;
+    max-width:520px;
+}
+
+/* Info Cards */
+
+.info-box{
+    display:flex;
+    gap:20px;
+    margin-bottom:25px;
+}
+
+.info-icon{
+    width:55px;
+    height:55px;
+    border-radius:16px;
+    background:rgba(255,255,255,0.08);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    backdrop-filter:blur(10px);
+}
+
+.info-text h4{
+    margin-bottom:6px;
+    font-size:18px;
+}
+
+.info-text p{
+    margin:0;
+    font-size:15px;
+    color:#c4c4c4;
+}
+
+/* Form Card */
+
+.form-card{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(18px);
+    border-radius:30px;
+    padding:40px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+}
+
+.form-card h2{
+    margin-bottom:10px;
+    font-size:32px;
+}
+
+.form-card p{
+    color:#b0b0b0;
+    margin-bottom:30px;
+}
+
+/* Inputs */
+
+.form-group{
+    margin-bottom:22px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:10px;
+    font-size:14px;
+    color:#d4d4d8;
+}
+
+.form-control{
+    width:100%;
+    padding:16px 18px;
+    border:none;
+    outline:none;
+    border-radius:16px;
+    background:rgba(255,255,255,0.06);
+    color:white;
+    font-size:15px;
+    border:1px solid transparent;
+    transition:0.3s;
+}
+
+.form-control:focus{
+    border-color:#06b6d4;
+    box-shadow:0 0 15px rgba(6,182,212,0.4);
+}
+
+textarea.form-control{
+    min-height:140px;
+    resize:none;
+}
+
+/* Button */
+
+.submit-btn{
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:16px;
+    background:linear-gradient(90deg,#06b6d4,#6366f1);
+    color:white;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.submit-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 30px rgba(99,102,241,0.4);
+}
+
+/* Success */
+
+.success-message{
+    display:none;
+    margin-top:20px;
+    padding:16px;
+    border-radius:14px;
+    background:rgba(34,197,94,0.2);
+    border:1px solid rgba(34,197,94,0.4);
+    color:#86efac;
+}
+
+/* Responsive */
+
+@media(max-width:980px){
+
+    .contact-wrapper{
+        grid-template-columns:1fr;
+    }
+
+    .left-content{
+        text-align:center;
+    }
+
+    .left-content p{
+        margin:auto auto 40px;
+    }
+
+    .left-content h1{
+        font-size:48px;
+    }
+}
+
+@media(max-width:600px){
+
+    .left-content h1{
+        font-size:38px;
+    }
+
+    .form-card{
+        padding:28px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="bg-glow glow1"></div>
+<div class="bg-glow glow2"></div>
+
+<div class="container">
+
+    <div class="contact-wrapper">
+
+        <!-- LEFT -->
+
+        <div class="left-content">
+
+            <h1>
+                Let's Build <span>Something Amazing</span>
+            </h1>
+
+            <p>
+                Have a project in mind or need automation solutions?
+                Send us a message and our team will contact you shortly.
+            </p>
+
+            <div class="info-box">
+                <div class="info-icon">📧</div>
+                <div class="info-text">
+                    <h4>Email Us</h4>
+                    <p>arnab.roy@codeclouds.co.in</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">📞</div>
+                <div class="info-text">
+                    <h4>Call Us</h4>
+                    <p>+91 9330021550</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <div class="info-icon">📍</div>
+                <div class="info-text">
+                    <h4>Location</h4>
+                    <p>Kolkata, India</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+
+        <div class="form-card">
+
+            <h2>Contact Us</h2>
+            <p>We'd love to hear from you.</p>
+
+            <form id="contactForm">
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="firstname" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Message</label>
+                    <textarea id="description" class="form-control" required></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Send Message
+                </button>
+
+                <div class="success-message" id="successMessage">
+                    Your message has been submitted successfully.
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const webhookUrl = "https://arnab-test.app.n8n.cloud/webhook/contact-form";
+
+const form = document.getElementById("contactForm");
+const successMessage = document.getElementById("successMessage");
+
+form.addEventListener("submit", async (e) => {
+
+    e.preventDefault();
+
+    const data = {
+        firstname: document.getElementById("firstname").value,
+        email: document.getElementById("email").value,
+        description: document.getElementById("description").value
+    };
+
+    try {
+
+        await fetch(webhookUrl,{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify(data)
+        });
+
+        successMessage.style.display = "block";
+
+        form.reset();
+
+        setTimeout(() => {
+            successMessage.style.display = "none";
+        },5000);
+
+    } catch(error){
+
+        alert("Something went wrong.");
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
+
