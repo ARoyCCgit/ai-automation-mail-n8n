@@ -1,0 +1,679 @@
+{
+  "name": "Webhook call SF to GHL Lead & Opportunity Create & Update",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/contacts/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer pit-9b2b7d0c-0ca4-49f4-aee8-839468651a3a"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"locationId\": \"qXdo1hafGcMWo6JE3V9N\",\n  \"firstName\": \"{{ $('Get a lead').item.json.FirstName }}\",\n  \"lastName\": \"{{ $('Get a lead').item.json.LastName }}\",\n  \"email\": \"{{ $('Get a lead').item.json.Email }}\",\n  \"phone\": \"{{ $('Get a lead').item.json.Phone || $('Get a lead').item.json.MobilePhone }}\",\n  \"source\": \"{{ $('Get a lead').item.json.LeadSource }}\",\n  \"address1\": \"{{ $('Get a lead').item.json.Street }}\",\n  \"city\": \"{{ $('Get a lead').item.json.City }}\",\n  \"state\": \"{{ $('Get a lead').item.json.StateCode }}\",\n  \"postalCode\": \"{{ $('Get a lead').item.json.PostalCode }}\",\n  \"country\": \"{{ $('Get a lead').item.json.CountryCode }}\",\n  \"companyName\": \"{{ $('Get a lead').item.json.LeadSource }}\",\n  \"dateOfBirth\": \"{{ $('Get a lead').item.json.Date_of_Birth__c ?? ''}}\",\n  \"dnd\": false,\n  \"customFields\": [\n        {\n      \"key\": \"sf_owner_name\",\n      \"field_value\": \"{{ $('Get a lead').item.json.OwnerId?.startsWith('005') \n        ? $('Get a user').item.json?.Name \n        : 'Default' }}\"\n    },\n        {\n      \"key\": \"sf_owner_email\",\n      \"field_value\": \"{{ $('Get a lead').item.json.OwnerId?.startsWith('005') \n        ? $('Get a user').item.json?.Username \n        : 'default@unitedfn.com' }}\"\n    },\n    {\n      \"key\": \"owner_contact_no\",\n      \"field_value\": \"{{ $('Get a lead').item.json.OwnerId?.startsWith('005') \n        ?  ($('Get a user').item.json.Phone || $('Get a user').item.json.MobilePhone)\n        : 'default' }}\"\n    },\n    {\n      \"key\": \"lead_status\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Status }}\"\n    },\n    {\n      \"key\": \"debt_amount\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Estimated_Total_Debt__c ?? ''}}\"\n    },\n    {\n      \"key\": \"utm_tags\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Tags__c ?? 'None'}}\"\n    },    \n    {\n      \"key\": \"credit_pull_debt_amount\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Credit_Pull_Debt_Amount__c ?? '0'}}\"\n    },\n    {\n      \"key\": \"salesforce_lead_id\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Id ?? ''}}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1264,
+        128
+      ],
+      "id": "099a2d45-6ad5-4d9e-bb9a-fd7b6d11befe",
+      "name": "Create contact to the GHL"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://services.leadconnectorhq.com/contacts/{{ $('Get user from GHL').item.json.contact.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer pit-9b2b7d0c-0ca4-49f4-aee8-839468651a3a"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            },
+            {}
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"firstName\": \"{{ $('Get a lead').item.json.FirstName }}\",\n  \"lastName\": \"{{ $('Get a lead').item.json.LastName }}\",\n  \"email\": \"{{ $('Get a lead').item.json.Email }}\",\n  \"phone\": \"{{ $('Get a lead').item.json.Phone || $('Get a lead').item.json.MobilePhone }}\",\n  \"source\": \"{{ $('Get a lead').item.json.LeadSource }}\",\n  \"address1\": \"{{ $('Get a lead').item.json.Street }}\",\n  \"city\": \"{{ $('Get a lead').item.json.City }}\",\n  \"state\": \"{{ $('Get a lead').item.json.StateCode }}\",\n  \"postalCode\": \"{{ $('Get a lead').item.json.PostalCode }}\",\n  \"country\": \"{{ $('Get a lead').item.json.CountryCode }}\",\n  \"companyName\": \"{{ $('Get a lead').item.json.LeadSource }}\",\n  \"dateOfBirth\": \"{{ $('Get a lead').item.json.Date_of_Birth__c ?? ''}}\",\n  \"customFields\": [\n    {\n  \"key\": \"sf_owner_name\",\n  \"field_value\": \"{{ $('Get a lead').item.json.OwnerId?.startsWith('005') \n    ? $('Get a user').item.json?.Name \n    : 'Default' }}\"\n},\n    {\n  \"key\": \"sf_owner_email\",\n  \"field_value\": \"{{ $('Get a lead').item.json.OwnerId?.startsWith('005') \n    ? $('Get a user').item.json?.Username \n    : 'default@unitedfn.com' }}\"\n},\n{\n      \"key\": \"owner_contact_no\",\n      \"field_value\": \"{{ $('Get a lead').item.json.OwnerId?.startsWith('005') \n        ?  ($('Get a user').item.json.Phone || $('Get a user').item.json.MobilePhone)\n        : 'default' }}\"\n    },\n    {\n      \"key\": \"lead_status\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Status }}\"\n    },\n    {\n      \"key\": \"debt_amount\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Estimated_Total_Debt__c }}\"\n    },\n    {\n      \"key\": \"utm_tags\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Tags__c ?? 'None'}}\"\n    },    \n    {\n      \"key\": \"credit_pull_debt_amount\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Credit_Pull_Debt_Amount__c ?? '0' }}\"\n    },\n    {\n      \"key\": \"salesforce_lead_id\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Id }}\"\n    }\n  ]\n}",
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1472,
+        -160
+      ],
+      "id": "581c5de1-ab58-45f9-9f01-c9867256765a",
+      "name": "update a contact to GHL"
+    },
+    {
+      "parameters": {
+        "url": "https://services.leadconnectorhq.com/opportunities/pipelines",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "locationId",
+              "value": "qXdo1hafGcMWo6JE3V9N"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer pit-9b2b7d0c-0ca4-49f4-aee8-839468651a3a"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        704,
+        -144
+      ],
+      "id": "6f39cb19-dc55-4d20-8f0f-26a22cc901ea",
+      "name": "Get Pipeline from GHL"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/opportunities/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer pit-9b2b7d0c-0ca4-49f4-aee8-839468651a3a"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"pipelineId\": \"{{ $('Get Pipeline from GHL').item.json.pipelines[0].id }}\",\n  \"locationId\": \"qXdo1hafGcMWo6JE3V9N\",\n  \"name\": \"{{ $json.contact.fullNameLowerCase }}\",\n  \"source\": \"{{ $json.contact.source }}\",\n  \"pipelineStageId\": \"{{ \n    $('Get Pipeline from GHL').item.json.pipelines[0].stages\n    .find(s => s.name ===  $('Get a lead').item.json.Status)\n    ?.id\n  }}\",\n  \"status\": \"open\",\n  \"contactId\": \"{{ $json.contact.id }}\",\n  \"monetaryValue\": \"{{ $('Get a lead').item.json.Estimated_Total_Debt__c }}\",\n  \"customFields\": [ \n    {\n      \"key\": \"opportunity_notes\",\n      \"field_value\": \"{{\n          $('Get a lead').item.json.Notes__c ?? ''\n        }}\"\n    },\n    {\n      \"key\": \"utm_tags\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Tags__c ?? ''}}\"\n    },    \n    {\n      \"key\": \"credit_pull_debt_amount\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Credit_Pull_Debt_Amount__c ?? ''}}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1536,
+        128
+      ],
+      "id": "af58f586-468d-4c66-b4bc-0ede492e9881",
+      "name": "Create Opportunity in GHL"
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://services.leadconnectorhq.com/opportunities/{{ $json.opportunities[0].id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer pit-9b2b7d0c-0ca4-49f4-aee8-839468651a3a"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"pipelineId\": \"{{ $('Get Pipeline from GHL').item.json.pipelines[0].id }}\",\n  \"name\": \"{{ $('update a contact to GHL').item.json.contact.fullNameLowerCase }}\",\n  \"source\": \"{{ $('update a contact to GHL').item.json.contact.source }}\",\n  \"pipelineStageId\": \"{{ \n    $('Get Pipeline from GHL').item.json.pipelines[0].stages\n    .find(s => s.name === $('Get a lead').item.json.Status)\n    ?.id\n  }}\",\n  \"monetaryValue\": \"{{ $('Get a lead').item.json.Estimated_Total_Debt__c ?? '' }}\",\n  \"customFields\": [ \n    {\n      \"key\": \"opportunity_notes\",\n      \"field_value\": \"{{\n          $('Get a lead').item.json.Notes__c ?? ''\n        }}\"\n    },\n    {\n      \"key\": \"utm_tags\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Tags__c ?? ''}}\"\n    },    \n    {\n      \"key\": \"credit_pull_debt_amount\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Credit_Pull_Debt_Amount__c ?? ''}}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2176,
+        -176
+      ],
+      "id": "8196d97c-061d-4a78-9e7d-e2428c102fd8",
+      "name": "Update Opportunity in GHL"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c3d69037-8d80-49c1-a6df-e5228e300188",
+              "leftValue": "={{ $json.OwnerId }}",
+              "rightValue": "005",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        80,
+        -160
+      ],
+      "id": "6f51efac-4c34-4817-9c81-8fdee1cc85c9",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "url": "https://services.leadconnectorhq.com/contacts/search/duplicate",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "email",
+              "value": "={{ $('Get a lead').item.json.Email }}"
+            },
+            {
+              "name": "locationId",
+              "value": "qXdo1hafGcMWo6JE3V9N"
+            },
+            {
+              "name": "number",
+              "value": "={{ $('Get a lead').item.json.Phone }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer pit-9b2b7d0c-0ca4-49f4-aee8-839468651a3a"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1024,
+        -144
+      ],
+      "id": "f871e833-a2c8-4a2e-a22a-c900aa9eb84d",
+      "name": "Get user from GHL"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "87ded3a2-cd0b-4164-968d-31462e5f47e5",
+              "leftValue": "={{ $json.contact.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1232,
+        -144
+      ],
+      "id": "dcd61e0e-1d37-4bbd-84eb-0027dacd98ef",
+      "name": "If Contact Exists in GHL"
+    },
+    {
+      "parameters": {
+        "url": "https://services.leadconnectorhq.com/opportunities/search",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "location_id",
+              "value": "qXdo1hafGcMWo6JE3V9N"
+            },
+            {
+              "name": "contact_id",
+              "value": "={{ $('Get user from GHL').item.json.contact.id }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer pit-9b2b7d0c-0ca4-49f4-aee8-839468651a3a"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1728,
+        -160
+      ],
+      "id": "e02bdc06-702e-42d8-bab5-6085dd8a5859",
+      "name": "Get GHL Opp ID"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b77ab217-636f-4fc3-92be-65f9a38de7a9",
+              "leftValue": "={{ $json.opportunities[0].id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1936,
+        -160
+      ],
+      "id": "e8578145-107d-404e-a80b-b008eed0828b",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://services.leadconnectorhq.com/opportunities/",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Accept",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer pit-9b2b7d0c-0ca4-49f4-aee8-839468651a3a"
+            },
+            {
+              "name": "Version",
+              "value": "2021-07-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"pipelineId\": \"{{ $('Get Pipeline from GHL').item.json.pipelines[0].id }}\",\n  \"locationId\": \"qXdo1hafGcMWo6JE3V9N\",\n  \"name\": \"{{ $('update a contact to GHL').item.json.contact.fullNameLowerCase }}\",\n  \"source\": \"{{ $('update a contact to GHL').item.json.contact.source }}\",\n  \"pipelineStageId\": \"{{ \n    $('Get Pipeline from GHL').item.json.pipelines[0].stages\n    .find(s => s.name ===  $('Get a lead').item.json.Status)\n    ?.id\n  }}\",\n  \"status\": \"open\",\n  \"contactId\": \"{{ $('Get user from GHL').item.json.contact.id }}\",\n  \"monetaryValue\": \"{{ $('Get a lead').item.json.Estimated_Total_Debt__c }}\",\n  \"customFields\": [ \n    {\n      \"key\": \"opportunity_notes\",\n      \"field_value\": \"{{\n          $('Get a lead').item.json.Notes__c ?? ''\n        }}\"\n    },\n    {\n      \"key\": \"utm_tags\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Tags__c ?? ''}}\"\n    },    \n    {\n      \"key\": \"credit_pull_debt_amount\",\n      \"field_value\": \"{{ $('Get a lead').item.json.Credit_Pull_Debt_Amount__c ?? ''}}\"\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1920,
+        128
+      ],
+      "id": "3beb63d5-bfaf-42d6-9e09-92c6eaf94694",
+      "name": "Create Opportunity in GHL for existing Contact"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "salesforce-update-workflow",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -384,
+        -288
+      ],
+      "id": "1736224c-ecd9-4669-80b3-42c27d8572bc",
+      "name": "Webhook update",
+      "webhookId": "0fa916d2-7587-474e-ba38-bea05a68fa6d"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "salesforce-create-lead",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -400,
+        64
+      ],
+      "id": "77b96c79-ab88-4b27-ba04-63a86b445e80",
+      "name": "Webhook create",
+      "webhookId": "cdc4f17e-c388-459a-bb50-2e46ce545a13"
+    },
+    {
+      "parameters": {
+        "url": "=https://unitedfn.com/salesforce-api/get-lead.php?id={{ $json.body.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -128,
+        -160
+      ],
+      "id": "30e7a324-87d5-48b4-af99-2db805171f5e",
+      "name": "Get a lead"
+    },
+    {
+      "parameters": {
+        "url": "=https://unitedfn.com/salesforce-api/get-user.php?id={{ $('Get a lead').item.json.OwnerId }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        400,
+        -256
+      ],
+      "id": "97abde3a-2f6a-41b7-a265-c1548d84e207",
+      "name": "Get a user"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Create contact to the GHL": {
+      "main": [
+        [
+          {
+            "node": "Create Opportunity in GHL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "update a contact to GHL": {
+      "main": [
+        [
+          {
+            "node": "Get GHL Opp ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Pipeline from GHL": {
+      "main": [
+        [
+          {
+            "node": "Get user from GHL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get a user",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Pipeline from GHL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get user from GHL": {
+      "main": [
+        [
+          {
+            "node": "If Contact Exists in GHL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If Contact Exists in GHL": {
+      "main": [
+        [
+          {
+            "node": "update a contact to GHL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create contact to the GHL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get GHL Opp ID": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Update Opportunity in GHL",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create Opportunity in GHL for existing Contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook update": {
+      "main": [
+        [
+          {
+            "node": "Get a lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook create": {
+      "main": [
+        [
+          {
+            "node": "Get a lead",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a lead": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a user": {
+      "main": [
+        [
+          {
+            "node": "Get Pipeline from GHL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "errorWorkflow": "W7zp2BxuxqawWUzS"
+  },
+  "versionId": "ebdc983f-9ef3-4584-80d3-f63505b8f64f",
+  "meta": {
+    "instanceId": "45fbf5b1f3bd356f672864b43c60e849a683badf3d87cefdfa3ba21b38940eb4"
+  },
+  "id": "4IyePMBvl3HjuhpU",
+  "tags": [
+    {
+      "updatedAt": "2026-02-06T05:04:04.799Z",
+      "createdAt": "2026-02-06T05:04:04.799Z",
+      "id": "JulUehzPTmzW45cF",
+      "name": "Debt1 Digital"
+    }
+  ]
+}

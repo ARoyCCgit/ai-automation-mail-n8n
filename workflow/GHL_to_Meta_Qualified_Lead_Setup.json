@@ -1,0 +1,88 @@
+{
+  "name": "GHL_to_Meta_Qualified_Lead_Setup",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "qualified-lead-meta",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "35516c67-bd26-4cad-8d6f-8073478fde34",
+      "name": "Webhook",
+      "webhookId": "8c877ad0-9ac1-4d7d-9e87-6c364a762173"
+    },
+    {
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\n\n// Hash function\nfunction sha256(value) {\n  if (!value) return undefined;\n  return crypto.createHash('sha256')\n    .update(String(value).trim().toLowerCase())\n    .digest('hex');\n}\n\n// Normalize phone\nfunction normalizePhone(phone) {\n  return String(phone || '').replace(/\\D/g, '');\n}\n\n// Debt → Base Value (as per spec)\nfunction getBaseValue(debt) {\n  if (debt >= 50000) return 150;\n  if (debt >= 30000) return 100;\n  if (debt >= 20000) return 50;\n  return 0;\n}\n\n// Get incoming data (YOUR STRUCTURE)\nconst body = $input.first().json.body;\nconst data = body.customData || {};\n\n// Extract fields\nconst contactId = data.contact_id || '';\nconst email = data.email || '';\nconst phone = normalizePhone(data.phone || '');\nconst firstName = data.first_name || '';\nconst lastName = data.last_name || '';\nconst rawDebt = data.debt_amount || 0;\n\n// IMPORTANT: stage field from your payload\nconst stage = (data.stage || '').toLowerCase();\n\n// Clean debt\nconst debt = Number(String(rawDebt).replace(/[^0-9.]/g, ''));\n\n// Base value\nconst baseValue = getBaseValue(debt);\n\n// Event Mapping\nlet eventName = \"Lead\";\nlet stageKey = \"lead\";\nlet stageValue = 0;\n\nif (stage.includes(\"analysis\")) {\n  eventName = \"AnalysisReady\";\n  stageKey = \"analysis_ready\";\n  stageValue = 50;\n}\nelse if (stage.includes(\"pitched\")) {\n  eventName = \"Pitched\";\n  stageKey = \"pitched\";\n  stageValue = 100;\n}\nelse if (stage.includes(\"deal\")) {\n  eventName = \"DealComplete\";\n  stageKey = \"deal_complete\";\n  stageValue = 200;\n}\nelse {\n  eventName = \"Lead\";\n  stageKey = \"lead\";\n}\n\n// Total Value\nconst totalValue = baseValue + stageValue;\n\n// Deduplication ID (DO NOT ADD TIMESTAMP HERE)\nconst eventId = `lead_${contactId}_${stageKey}`;\n\n// Event Time\nconst eventTime = Math.floor(Date.now() / 1000);\n\n// Meta CAPI Payload\nconst capiPayload = {\n  data: [{\n    event_name: eventName,\n    event_time: eventTime,\n    event_id: eventId,\n    action_source: \"system_generated\",\n\n    user_data: {\n      external_id: contactId,\n      em: email ? [sha256(email)] : undefined,\n      ph: phone ? [sha256(phone)] : undefined,\n      fn: firstName ? [sha256(firstName)] : undefined,\n      ln: lastName ? [sha256(lastName)] : undefined\n    },\n\n    custom_data: {\n      value: totalValue,\n      currency: \"USD\",\n      debt_amount: debt,\n      stage: stageKey\n    }\n  }]\n};\n\n// Pixel Payload (for browser dedup)\nconst pixelPayload = {\n  event_name: eventName,\n  event_id: eventId,\n  value: totalValue,\n  currency: \"USD\"\n};\n\n// Optional logging (WITH timestamp safely)\nconst logId = `${eventId}_${Date.now()}`;\n\nreturn [{\n  json: {   \n    capiPayload,\n    pixelPayload,\n    logId\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        272,
+        0
+      ],
+      "id": "3800dff4-4551-4f63-86da-4939719c2795",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://unitedfn.com/Fb-meta-debt1-CAPI/meta-api.php",
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.capiPayload) }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        480,
+        0
+      ],
+      "id": "e5e3c31d-f4ac-4cd7-9ba4-8bea22663d4a",
+      "name": "HTTP Request"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "81f7beb9-90b5-4f17-9dde-126b4fe737f4",
+  "meta": {
+    "instanceId": "45fbf5b1f3bd356f672864b43c60e849a683badf3d87cefdfa3ba21b38940eb4"
+  },
+  "id": "D8yO2F6XmbXuXUWz",
+  "tags": []
+}
